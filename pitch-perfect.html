@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PITCH PERFECT — A Crash Course in the Beautiful Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Manrope:wght@300..800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f1ead8;
+  --paper: #ebe3cc;
+  --pitch: #0c3320;
+  --grass: #1a5b39;
+  --line: #f6f1e1;
+  --ink: #0c0b0a;
+  --blood: #d63031;
+  --gold: #f0b429;
+  --sky: #4f6d8a;
+  --shadow: rgba(12,11,10,0.18);
+
+  --font-display: 'Big Shoulders Display', sans-serif;
+  --font-serif: 'Fraunces', serif;
+  --font-body: 'Manrope', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.55;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* paper grain & halftone */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+::selection { background: var(--blood); color: var(--cream); }
+
+/* TOP BAR */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 32px;
+  background: var(--ink);
+  color: var(--cream);
+  border-bottom: 2px solid var(--blood);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.topbar .crest {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+.topbar .crest .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--blood);
+  box-shadow: 0 0 0 3px rgba(214,48,49,0.25);
+  animation: blink 1.6s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: 0.35; } }
+.topbar nav { display: flex; gap: 22px; }
+.topbar nav a { color: var(--cream); text-decoration: none; opacity: 0.7; transition: opacity 0.2s, color 0.2s; }
+.topbar nav a:hover { opacity: 1; color: var(--gold); }
+.topbar .progress { display: flex; align-items: center; gap: 8px; }
+.topbar .progress-bar {
+  width: 100px; height: 6px;
+  background: rgba(241,234,216,0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.topbar .progress-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--blood));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* SHARED */
+section { padding: 80px 5vw; position: relative; }
+.kicker {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--blood);
+  letter-spacing: 0.02em;
+  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.kicker::before {
+  content: "";
+  display: inline-block;
+  width: 30px; height: 1px;
+  background: var(--blood);
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+  opacity: 0.5;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(56px, 9vw, 140px);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.section-lede {
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.45;
+  max-width: 640px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 56px;
+}
+
+/* HERO */
+.hero {
+  min-height: 92vh;
+  padding: 60px 5vw 40px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 40px;
+  align-items: end;
+  position: relative;
+}
+.hero-meta {
+  position: absolute;
+  top: 60px; left: 5vw; right: 5vw;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.hero-meta span:nth-child(2) { font-family: var(--font-serif); font-style: italic; letter-spacing: 0; text-transform: none; opacity: 1; }
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(96px, 19vw, 320px);
+  line-height: 0.78;
+  letter-spacing: -0.035em;
+  position: relative;
+}
+.hero-title .perfect {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  display: inline-block;
+  margin-left: 0.05em;
+}
+.hero-title .underline {
+  position: relative; display: inline-block;
+}
+.hero-title .underline::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0.04em;
+  height: 0.18em;
+  background: var(--blood);
+  z-index: -1;
+  transform: skewY(-1.5deg);
+}
+.hero-side {
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.hero-side .deck {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.4;
+  color: var(--ink);
+  border-left: 2px solid var(--blood);
+  padding-left: 18px;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  font-family: var(--font-mono);
+}
+.hero-stats .stat .num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--pitch);
+}
+.hero-stats .stat .label {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.scroll-cue {
+  position: absolute;
+  bottom: 24px; left: 5vw;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+}
+.scroll-cue::before {
+  content: ""; width: 36px; height: 1px; background: var(--ink);
+  animation: pulseLine 2s ease-in-out infinite;
+}
+@keyframes pulseLine { 50% { transform: scaleX(0.2); transform-origin: left; } }
+.hero-tactical {
+  position: absolute;
+  right: 5vw; top: 130px;
+  width: min(28vw, 280px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; align-items: start; padding-top: 100px; }
+  .hero-tactical { display: none; }
+}
+
+/* LESSON SECTIONS */
+.lesson-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.mark-read {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+}
+.mark-read:hover { background: var(--ink); color: var(--cream); }
+.mark-read.done { background: var(--pitch); color: var(--cream); border-color: var(--pitch); }
+.mark-read.done::before { content: "✓"; }
+
+/* RULES */
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.rule-card {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 28px 26px 26px;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.rule-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.rule-card .num {
+  position: absolute;
+  top: -14px; left: 18px;
+  background: var(--blood);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 22px;
+  padding: 4px 12px;
+  letter-spacing: 0.05em;
+}
+.rule-card h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 26px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+}
+.rule-card p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(12,11,10,0.82);
+}
+.rule-card .tag {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 3px 8px;
+}
+
+/* PITCH SECTION */
+.pitch-wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+@media (max-width: 900px) { .pitch-wrap { grid-template-columns: 1fr; } }
+
+.pitch-svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(8px 8px 0 var(--ink));
+  border: 2px solid var(--ink);
+  background: var(--grass);
+  background-image: repeating-linear-gradient(
+    0deg,
+    var(--grass) 0,
+    var(--grass) 32px,
+    rgba(0,0,0,0.08) 32px,
+    rgba(0,0,0,0.08) 64px
+  );
+}
+.player-dot {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.player-dot:hover { transform: scale(1.18); }
+.player-dot.active circle:first-child { fill: var(--blood); }
+.player-dot.active text { fill: var(--cream); }
+
+.position-info {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 36px 32px;
+  position: relative;
+  min-height: 380px;
+}
+.position-info .badge {
+  position: absolute;
+  top: -16px; left: 26px;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 6px 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.position-info h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+.position-info .role {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--blood);
+  margin-bottom: 18px;
+  display: block;
+}
+.position-info p { font-size: 15.5px; line-height: 1.65; margin-bottom: 16px; }
+.position-info .traits {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.position-info .traits span {
+  border: 1px solid var(--ink);
+  padding: 4px 9px;
+  background: var(--cream);
+}
+.position-info .legend-key {
+  position: absolute;
+  bottom: 20px; right: 24px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* LEGENDS */
+.legends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+.sticker {
+  position: relative;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 22px 22px 20px;
+  transform: rotate(-1deg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+.sticker:nth-child(even) { transform: rotate(1deg); }
+.sticker:nth-child(3n) { transform: rotate(-0.4deg); }
+.sticker:hover {
+  transform: rotate(0) translateY(-4px);
+  box-shadow: 8px 8px 0 var(--ink);
+  z-index: 2;
+}
+.sticker::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1.5px);
+  background-size: 8px 8px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.sticker .country {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+.sticker .num {
+  position: absolute;
+  top: 16px; right: 18px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 38px;
+  color: var(--blood);
+  line-height: 1;
+}
+.sticker h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 30px;
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  padding-right: 40px;
+}
+.sticker .era {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--blood);
+  margin-bottom: 12px;
+}
+.sticker p { font-size: 13.5px; line-height: 1.55; }
+.sticker .stats {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--ink);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.sticker .stats b { font-family: var(--font-display); font-size: 16px; display: block; }
+
+/* SKILLS */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+}
+.skill {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.skill:hover { transform: translateY(-4px); }
+.skill svg {
+  width: 100%;
+  height: 200px;
+  background: var(--cream);
+  display: block;
+  border-bottom: 2px solid var(--ink);
+}
+.skill .body { padding: 22px 24px 26px; }
+.skill .name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 30px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.skill .difficulty {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: inline-block;
+}
+.skill .desc { font-size: 14px; line-height: 1.55; opacity: 0.88; }
+.skill .steps {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(241,234,216,0.2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skill .steps span::before {
+  content: "→ ";
+  color: var(--blood);
+}
+
+/* GAMES */
+.games-section {
+  background: var(--ink);
+  color: var(--cream);
+  position: relative;
+}
+.games-section .kicker { color: var(--gold); }
+.games-section .kicker::before { background: var(--gold); }
+.games-section .section-title { color: var(--cream); }
+.games-section .section-lede { color: rgba(241,234,216,0.85); }
+
+.lock-banner {
+  background: var(--blood);
+  color: var(--cream);
+  padding: 18px 24px;
+  margin-bottom: 36px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.lock-banner.unlocked { background: var(--pitch); }
+.lock-banner .status { font-family: var(--font-display); font-weight: 900; font-size: 16px; letter-spacing: 0.05em; }
+
+.games-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  position: relative;
+}
+@media (max-width: 900px) { .games-grid { grid-template-columns: 1fr; } }
+
+.game {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--cream);
+  padding: 30px;
+  position: relative;
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
+}
+.game.locked > .game-body { filter: blur(4px); pointer-events: none; opacity: 0.5; }
+.game .lock-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(12,11,10,0.92);
+  color: var(--cream);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+  z-index: 5;
+}
+.game.locked .lock-overlay { display: flex; }
+.game .lock-overlay .icon {
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: var(--gold);
+}
+.game .lock-overlay p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.game h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 38px;
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin-bottom: 6px;
+}
+.game .game-tag {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--blood);
+  font-size: 16px;
+  margin-bottom: 18px;
+  display: block;
+}
+.game .game-body { flex: 1; display: flex; flex-direction: column; }
+
+/* MATCH GAME */
+.match-card { min-height: auto; padding: 28px; }
+.match-card h3 { font-size: 42px; line-height: 0.95; }
+.btn-reset {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--ink); color: var(--cream);
+  border: none; padding: 10px 18px; cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-reset:hover { background: var(--blood); }
+.match-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 14px 22px;
+  margin: 14px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--blood);
+}
+.match-team { display: flex; align-items: center; gap: 12px; }
+.match-team .team-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  display: inline-block;
+}
+.match-team .team-dot.home { background: var(--blood); }
+.match-team .team-dot.away { background: var(--cream); border: 1.5px solid var(--ink); }
+.match-team .team-score {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.match-clock {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.match-canvas-wrap {
+  position: relative;
+  border: 2px solid var(--cream);
+  margin-bottom: 14px;
+  background: #1a5b39;
+  aspect-ratio: 8 / 5;
+}
+#match-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.match-toast {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.85);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(40px, 9vw, 96px);
+  text-transform: uppercase;
+  color: var(--gold);
+  text-shadow: 4px 4px 0 var(--ink);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.3s ease;
+  letter-spacing: 0.05em;
+}
+.match-toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.match-toast.bad { color: var(--blood); }
+.match-overlay-msg {
+  position: absolute;
+  inset: 0;
+  background: rgba(12,11,10,0.94);
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+.match-overlay-msg .msg-verdict {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(56px, 11vw, 130px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.match-overlay-msg .msg-verdict span { color: var(--blood); }
+.match-overlay-msg .msg-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 20px;
+  margin: 8px 0 24px;
+}
+.match-overlay-msg .match-replay {
+  background: var(--cream);
+  color: var(--ink);
+  border: none;
+  padding: 12px 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.match-overlay-msg .match-replay:hover { background: var(--blood); color: var(--cream); }
+.match-controls {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream);
+  flex-wrap: wrap;
+}
+.match-controls kbd {
+  display: inline-block;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 2px 7px;
+  border: 1px solid var(--cream);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  margin: 0 1px;
+  border-radius: 2px;
+}
+.match-controls .btn-reset { margin-left: auto; }
+
+/* QUIZ */
+.quiz-wrap {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 40px;
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+}
+.quiz-wrap::before {
+  content: "FINAL WHISTLE";
+  position: absolute;
+  top: -14px; left: 24px;
+  background: var(--blood);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 14px;
+  padding: 6px 14px;
+  letter-spacing: 0.18em;
+}
+.quiz-q {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 1.05;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+.quiz-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.quiz-opt {
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  position: relative;
+  padding-left: 50px;
+}
+.quiz-opt::before {
+  content: attr(data-letter);
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  width: 24px; height: 24px;
+  background: var(--ink);
+  color: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+}
+.quiz-opt:hover { background: var(--ink); color: var(--cream); }
+.quiz-opt.correct { background: var(--pitch); border-color: var(--pitch); color: var(--cream); }
+.quiz-opt.correct::before { background: var(--gold); color: var(--ink); }
+.quiz-opt.wrong { background: var(--blood); border-color: var(--blood); color: var(--cream); }
+.quiz-opt.disabled { pointer-events: none; opacity: 0.6; }
+.quiz-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.quiz-meta .qbar {
+  flex: 1;
+  height: 4px;
+  background: rgba(12,11,10,0.15);
+  margin-left: 18px;
+  overflow: hidden;
+}
+.quiz-meta .qbar > span {
+  display: block;
+  height: 100%;
+  background: var(--blood);
+  width: 10%;
+  transition: width 0.3s ease;
+}
+.quiz-final {
+  text-align: center;
+  display: none;
+}
+.quiz-final.show { display: block; }
+.quiz-final .verdict-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(80px, 14vw, 180px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.quiz-final .verdict-num span { color: var(--blood); }
+.quiz-final .verdict-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+.quiz-final .restart {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  padding: 14px 24px;
+  cursor: pointer;
+}
+.quiz-final .restart:hover { background: var(--blood); }
+
+/* FOOTER */
+footer {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 80px 5vw 40px;
+  position: relative;
+}
+footer .megafoot {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(60px, 14vw, 180px);
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+footer .megafoot em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--blood);
+}
+footer .crest-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(241,234,216,0.2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+footer .crest-line .right { font-family: var(--font-serif); font-style: italic; letter-spacing: 0; text-transform: none; }
+
+/* DIVIDER */
+.divider-strip {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 14px 0;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  border-top: 2px solid var(--blood);
+  border-bottom: 2px solid var(--blood);
+}
+.divider-track {
+  display: inline-block;
+  animation: marquee 28s linear infinite;
+  padding-right: 40px;
+}
+.divider-track span { color: var(--blood); margin: 0 18px; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (max-width: 700px) {
+  section { padding: 60px 6vw; }
+  .topbar nav { display: none; }
+  .topbar { padding: 12px 18px; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .quiz-wrap { padding: 30px 22px; }
+}
+
+/* MOTION ----------------------------------------- */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ballSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulseDot {
+  0%, 100% { stroke-opacity: 1; stroke-width: 2; }
+  50%      { stroke-opacity: 0.4; stroke-width: 6; }
+}
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50%      { transform: translate(8px, -6px) rotate(2deg); }
+}
+
+/* Hero stagger */
+.hero-meta, .hero-title, .hero-side > *, .scroll-cue, .hero-tactical {
+  opacity: 0;
+  animation: riseIn 0.9s cubic-bezier(0.2, 0.7, 0.1, 1) forwards;
+}
+.hero-meta       { animation-delay: 0.05s; }
+.hero-title      { animation-delay: 0.15s; }
+.hero-side > :nth-child(1) { animation-delay: 0.35s; }
+.hero-side > :nth-child(2) { animation-delay: 0.50s; }
+.hero-tactical   { animation: fadeIn 1.4s ease 0.7s forwards, drift 8s ease-in-out 1.5s infinite; }
+.scroll-cue      { animation-delay: 0.85s; }
+
+/* Floating ball in hero corner */
+.hero-ball {
+  position: absolute;
+  bottom: 60px; right: 5vw;
+  width: 90px; height: 90px;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.1s forwards, drift 6s ease-in-out 1.5s infinite;
+}
+.hero-ball svg { width: 100%; height: 100%; animation: ballSpin 12s linear infinite; transform-origin: center; }
+@media (max-width: 900px) { .hero-ball { display: none; } }
+
+/* Section reveal */
+.reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.1, 1); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.1, 1); }
+.reveal-stagger.in > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger.in > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.in > *:nth-child(2) { transition-delay: 0.10s; }
+.reveal-stagger.in > *:nth-child(3) { transition-delay: 0.15s; }
+.reveal-stagger.in > *:nth-child(4) { transition-delay: 0.20s; }
+.reveal-stagger.in > *:nth-child(5) { transition-delay: 0.25s; }
+.reveal-stagger.in > *:nth-child(6) { transition-delay: 0.30s; }
+.reveal-stagger.in > *:nth-child(7) { transition-delay: 0.35s; }
+.reveal-stagger.in > *:nth-child(8) { transition-delay: 0.40s; }
+.reveal-stagger.in > *:nth-child(9) { transition-delay: 0.45s; }
+
+/* Pulsing player dots invite clicks */
+.player-dot circle:first-child { transition: fill 0.2s ease; }
+.player-dot:not(.active) circle:first-child {
+  animation: pulseDot 2.6s ease-in-out infinite;
+  stroke: #f6f1e1;
+}
+.player-dot:nth-of-type(2)  circle:first-child { animation-delay: 0.1s; }
+.player-dot:nth-of-type(3)  circle:first-child { animation-delay: 0.2s; }
+.player-dot:nth-of-type(4)  circle:first-child { animation-delay: 0.3s; }
+.player-dot:nth-of-type(5)  circle:first-child { animation-delay: 0.4s; }
+.player-dot:nth-of-type(6)  circle:first-child { animation-delay: 0.5s; }
+.player-dot:nth-of-type(7)  circle:first-child { animation-delay: 0.6s; }
+.player-dot:nth-of-type(8)  circle:first-child { animation-delay: 0.7s; }
+.player-dot:nth-of-type(9)  circle:first-child { animation-delay: 0.8s; }
+.player-dot:nth-of-type(10) circle:first-child { animation-delay: 0.9s; }
+.player-dot:nth-of-type(11) circle:first-child { animation-delay: 1.0s; }
+
+/* Penalty animations */
+#keeper {
+  transition: transform 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
+  transform-origin: 160px 70px;
+}
+#keeper.dive-TL { transform: translate(-90px, -22px) rotate(-22deg); }
+#keeper.dive-TR { transform: translate( 90px, -22px) rotate( 22deg); }
+#keeper.dive-BL { transform: translate(-90px,  16px) rotate(-30deg); }
+#keeper.dive-BR { transform: translate( 90px,  16px) rotate( 30deg); }
+#keeper.dive-TC { transform: translate(  0px, -18px) scale(1.05); }
+#keeper.dive-BC { transform: translate(  0px,  10px); }
+#pen-ball { transition: transform 0.5s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.3s ease; }
+#pen-ball.shoot-TL { transform: translate(-94px, -115px) scale(0.55); }
+#pen-ball.shoot-TC { transform: translate(  0px, -115px) scale(0.55); }
+#pen-ball.shoot-TR { transform: translate( 93px, -115px) scale(0.55); }
+#pen-ball.shoot-BL { transform: translate(-94px, -65px)  scale(0.7); }
+#pen-ball.shoot-BC { transform: translate(  0px, -65px)  scale(0.7); }
+#pen-ball.shoot-BR { transform: translate( 93px, -65px)  scale(0.7); }
+#pen-ball.gone { opacity: 0; }
+
+@keyframes flashIn {
+  0%   { opacity: 0; transform: scale(0.85); }
+  60%  { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.shootout-message.flash { animation: flashIn 0.45s ease; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="crest"><span class="dot"></span>PITCH PERFECT / FC</div>
+  <nav>
+    <a href="#rules">Rules</a>
+    <a href="#pitch">Pitch</a>
+    <a href="#legends">Legends</a>
+    <a href="#skills">Skills</a>
+    <a href="#games">Drills</a>
+    <a href="#quiz">Final Whistle</a>
+  </nav>
+  <div class="progress">
+    <span id="progress-label">0/4</span>
+    <div class="progress-bar"><span id="progress-fill"></span></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-meta">
+    <span>MATCHDAY №01 · FOUNDED 2026 · KICK-OFF 19:45 GMT</span>
+    <span>"the only sport that begins with a kiss of the foot"</span>
+    <span>EDITION I</span>
+  </div>
+  <svg class="hero-tactical" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+    <rect x="6" y="6" width="188" height="188" stroke-dasharray="3 3" opacity="0.5"/>
+    <circle cx="100" cy="100" r="22" stroke-dasharray="2 2"/>
+    <circle cx="100" cy="100" r="3" fill="currentColor"/>
+    <path d="M40 60 Q 90 30 150 70" stroke="#d63031" stroke-width="2"/>
+    <path d="M148 67 L 160 70 L 152 80" stroke="#d63031" stroke-width="2" fill="none"/>
+    <path d="M50 150 L 140 130" stroke-dasharray="4 3"/>
+    <circle cx="40" cy="60" r="4" fill="#d63031"/>
+    <circle cx="50" cy="150" r="4" fill="currentColor"/>
+    <text x="158" y="60" font-family="JetBrains Mono" font-size="9" fill="#d63031">PASS</text>
+    <text x="142" y="125" font-family="JetBrains Mono" font-size="9">RUN</text>
+  </svg>
+  <div>
+    <h1 class="hero-title">
+      PITCH<br>
+      <span class="underline">PER<span class="perfect">fect</span></span>
+    </h1>
+  </div>
+  <div class="hero-side">
+    <p class="deck">A crash course in the world's most-loved game — rules, positions, legends, technique, and the small drills that turn watching into knowing.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">17</div><span class="label">Laws of the Game</span></div>
+      <div class="stat"><div class="num">11</div><span class="label">Per Side</span></div>
+      <div class="stat"><div class="num">90<span style="font-size:24px">'</span></div><span class="label">Match Length</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL TO KICK OFF</div>
+</section>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="lesson-meta">
+    <div>
+      <span class="kicker">Lesson One</span>
+      <div class="section-num">§ 01 / RULES</div>
+    </div>
+    <button class="mark-read" data-lesson="rules">Mark as learned</button>
+  </div>
+  <h2 class="section-title">The<br>Laws.</h2>
+  <p class="section-lede">Football's rulebook is short by design. Eleven players a side, ninety minutes split in two, and a ball that must — without exception — fully cross the line for things to count. The rest is etiquette.</p>
+
+  <div class="rules-grid">
+    <article class="rule-card"><div class="num">01</div><h3>The Match</h3><p>Two teams of eleven, including a goalkeeper. Two halves of 45 minutes plus injury time. Whoever scores more, wins.</p><span class="tag">FUNDAMENTAL</span></article>
+
+    <article class="rule-card"><div class="num">02</div><h3>The Goal</h3><p>The whole ball must cross the whole line, between the posts and under the bar. No part remaining on the line — not by a hair.</p><span class="tag">DECISIVE</span></article>
+
+    <article class="rule-card"><div class="num">03</div><h3>Offside</h3><p>An attacker is offside if they're closer to the goal than both the ball and the second-to-last defender at the moment a teammate plays the ball forward to them.</p><span class="tag">CONTESTED</span></article>
+
+    <article class="rule-card"><div class="num">04</div><h3>Hands</h3><p>Outfield players cannot deliberately touch the ball with hand or arm. Only the goalkeeper, inside their own penalty area, may use hands.</p><span class="tag">FOUL</span></article>
+
+    <article class="rule-card"><div class="num">05</div><h3>The Cards</h3><p>Yellow is a warning. Red is a sending-off — the team plays on with ten. Two yellows in one match equals a red.</p><span class="tag">DISCIPLINE</span></article>
+
+    <article class="rule-card"><div class="num">06</div><h3>Free Kicks</h3><p>For most fouls play stops and the wronged team kicks from where it happened. Direct kicks can score; indirect ones must touch a second player first.</p><span class="tag">RESTART</span></article>
+
+    <article class="rule-card"><div class="num">07</div><h3>Penalty Kicks</h3><p>A foul inside your own penalty area is a penalty: a direct shot from twelve yards, only the keeper to beat. The hardest goal to miss, the easiest to bottle.</p><span class="tag">HIGH STAKES</span></article>
+
+    <article class="rule-card"><div class="num">08</div><h3>Throw-Ins</h3><p>When the ball leaves the touchline, the team that didn't touch it last throws it back in — both feet on the ground, ball over the head with two hands.</p><span class="tag">RESTART</span></article>
+
+    <article class="rule-card"><div class="num">09</div><h3>Substitutions</h3><p>Most competitions allow five substitutions, used in three windows. Once off, you don't come back on.</p><span class="tag">TACTICAL</span></article>
+  </div>
+</section>
+
+<div class="divider-strip"><div class="divider-track">
+  KEEP THE BALL <span>★</span> KNOW THE PITCH <span>★</span> READ THE GAME <span>★</span> TRUST THE WINGER <span>★</span>
+  KEEP THE BALL <span>★</span> KNOW THE PITCH <span>★</span> READ THE GAME <span>★</span> TRUST THE WINGER <span>★</span>
+</div></div>
+
+<!-- PITCH / POSITIONS -->
+<section id="pitch">
+  <div class="lesson-meta">
+    <div>
+      <span class="kicker">Lesson Two</span>
+      <div class="section-num">§ 02 / POSITIONS</div>
+    </div>
+    <button class="mark-read" data-lesson="positions">Mark as learned</button>
+  </div>
+  <h2 class="section-title">The<br>Shape.</h2>
+  <p class="section-lede">Eleven players, eleven jobs. The classic 4-3-3 below: a back four, a hard-working middle three, and a front line that bends the game forward. Tap any dot.</p>
+
+  <div class="pitch-wrap">
+    <svg class="pitch-svg" viewBox="0 0 600 800" id="pitch-svg">
+      <!-- pitch outline -->
+      <rect x="20" y="20" width="560" height="760" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <!-- halfway -->
+      <line x1="20" y1="400" x2="580" y2="400" stroke="#f6f1e1" stroke-width="3"/>
+      <!-- center circle -->
+      <circle cx="300" cy="400" r="62" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <circle cx="300" cy="400" r="3" fill="#f6f1e1"/>
+      <!-- penalty boxes -->
+      <rect x="140" y="20" width="320" height="120" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <rect x="220" y="20" width="160" height="48" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <rect x="140" y="660" width="320" height="120" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <rect x="220" y="732" width="160" height="48" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <!-- penalty arcs -->
+      <path d="M 240 140 A 60 60 0 0 1 360 140" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <path d="M 240 660 A 60 60 0 0 0 360 660" fill="none" stroke="#f6f1e1" stroke-width="3"/>
+      <!-- penalty spots -->
+      <circle cx="300" cy="100" r="3" fill="#f6f1e1"/>
+      <circle cx="300" cy="700" r="3" fill="#f6f1e1"/>
+      <!-- corner arcs -->
+      <path d="M 20 28 A 8 8 0 0 1 28 20" fill="none" stroke="#f6f1e1" stroke-width="2"/>
+      <path d="M 572 20 A 8 8 0 0 1 580 28" fill="none" stroke="#f6f1e1" stroke-width="2"/>
+      <path d="M 580 772 A 8 8 0 0 1 572 780" fill="none" stroke="#f6f1e1" stroke-width="2"/>
+      <path d="M 28 780 A 8 8 0 0 1 20 772" fill="none" stroke="#f6f1e1" stroke-width="2"/>
+
+      <!-- players: 4-3-3 -->
+      <g class="player-dot" data-pos="GK">
+        <circle cx="300" cy="730" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/>
+        <text x="300" y="735" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">GK</text>
+      </g>
+      <g class="player-dot" data-pos="LB"><circle cx="100" cy="600" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="100" y="605" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">LB</text></g>
+      <g class="player-dot" data-pos="CB"><circle cx="220" cy="630" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="220" y="635" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">CB</text></g>
+      <g class="player-dot" data-pos="CB"><circle cx="380" cy="630" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="380" y="635" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">CB</text></g>
+      <g class="player-dot" data-pos="RB"><circle cx="500" cy="600" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="500" y="605" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">RB</text></g>
+      <g class="player-dot" data-pos="DM"><circle cx="300" cy="490" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="300" y="495" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">DM</text></g>
+      <g class="player-dot" data-pos="CM"><circle cx="180" cy="430" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="180" y="435" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">CM</text></g>
+      <g class="player-dot" data-pos="CM"><circle cx="420" cy="430" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="420" y="435" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">CM</text></g>
+      <g class="player-dot" data-pos="LW"><circle cx="120" cy="240" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="120" y="245" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">LW</text></g>
+      <g class="player-dot" data-pos="ST"><circle cx="300" cy="200" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="300" y="205" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">ST</text></g>
+      <g class="player-dot" data-pos="RW"><circle cx="480" cy="240" r="22" fill="#0c0b0a" stroke="#f6f1e1" stroke-width="2"/><text x="480" y="245" font-family="Big Shoulders Display" font-weight="900" font-size="14" fill="#f6f1e1" text-anchor="middle">RW</text></g>
+    </svg>
+
+    <div class="position-info" id="position-info">
+      <span class="badge">Tap a player</span>
+      <h3 id="pos-name">CENTRE FORWARD</h3>
+      <span class="role" id="pos-role">— the finisher</span>
+      <p id="pos-desc">Click any of the eleven dots on the pitch to learn what each position is responsible for. We'll start at the back, but the front line is more glamorous.</p>
+      <div class="traits" id="pos-traits">
+        <span>FORMATION 4-3-3</span><span>11 PLAYERS</span><span>ANY PROFILE</span>
+      </div>
+      <span class="legend-key">FIG. 1 — TOP-DOWN</span>
+    </div>
+  </div>
+</section>
+
+<!-- LEGENDS -->
+<section id="legends">
+  <div class="lesson-meta">
+    <div>
+      <span class="kicker">Lesson Three</span>
+      <div class="section-num">§ 03 / LEGENDS</div>
+    </div>
+    <button class="mark-read" data-lesson="legends">Mark as learned</button>
+  </div>
+  <h2 class="section-title">The<br>Greats.</h2>
+  <p class="section-lede">Football is a story told in players. Here are nine of the most agreed-upon all-timers — names you'll hear in every conversation, every pub argument, every list ranked five through one.</p>
+
+  <div class="legends-grid">
+    <article class="sticker"><div class="num">10</div><div class="country">🇧🇷 BRAZIL</div><h3>PELÉ</h3><span class="era">1956 – 1977 · The King</span><p>Three World Cups, the only player to win it three times. Scored 1,000+ goals over his career and made flair look like grammar.</p><div class="stats"><div><b>3×</b>WC titles</div><div><b>1281</b>career goals</div></div></article>
+
+    <article class="sticker"><div class="num">10</div><div class="country">🇦🇷 ARGENTINA</div><h3>MARADONA</h3><span class="era">1976 – 1997 · The Hand of God</span><p>Carried Napoli and Argentina to titles single-footedly. Scored the goal of the century and the most controversial goal of the century in the same match.</p><div class="stats"><div><b>1×</b>WC title</div><div><b>1986</b>annus mirabilis</div></div></article>
+
+    <article class="sticker"><div class="num">10</div><div class="country">🇦🇷 ARGENTINA</div><h3>MESSI</h3><span class="era">2004 – present · La Pulga</span><p>Eight Ballons d'Or, finally lifted the World Cup in Qatar at 35. The most decorated, most consistent, most cited footballer ever to play.</p><div class="stats"><div><b>8×</b>Ballon d'Or</div><div><b>800+</b>career goals</div></div></article>
+
+    <article class="sticker"><div class="num">7</div><div class="country">🇵🇹 PORTUGAL</div><h3>RONALDO</h3><span class="era">2002 – present · CR7</span><p>Manufactured a body and a career into trophies on three continents. Top scorer in Champions League history, the most-followed athlete on Earth.</p><div class="stats"><div><b>5×</b>UCL titles</div><div><b>900+</b>career goals</div></div></article>
+
+    <article class="sticker"><div class="num">14</div><div class="country">🇳🇱 NETHERLANDS</div><h3>CRUYFF</h3><span class="era">1964 – 1984 · The Architect</span><p>Played and coached Total Football. Invented the turn that bears his name. Without him there is no modern Barcelona, and arguably no modern game.</p><div class="stats"><div><b>3×</b>Ballon d'Or</div><div><b>1×</b>turn named after him</div></div></article>
+
+    <article class="sticker"><div class="num">10</div><div class="country">🇫🇷 FRANCE</div><h3>ZIDANE</h3><span class="era">1989 – 2006 · Zizou</span><p>A midfielder with a centre-forward's instinct and a ballerina's balance. Two World Cup final goals, then a headbutt, then five Champions Leagues as a coach.</p><div class="stats"><div><b>1×</b>WC title</div><div><b>1×</b>Ballon d'Or</div></div></article>
+
+    <article class="sticker"><div class="num">9</div><div class="country">🇩🇪 GERMANY</div><h3>BECKENBAUER</h3><span class="era">1964 – 1983 · Der Kaiser</span><p>Reinvented the centre-back as a creator. Captained West Germany to the 1974 title and managed them to the 1990 title. Sweeper-libero in the truest sense.</p><div class="stats"><div><b>2×</b>Ballon d'Or</div><div><b>1×</b>WC as player+coach</div></div></article>
+
+    <article class="sticker"><div class="num">1</div><div class="country">🇷🇺 USSR</div><h3>YASHIN</h3><span class="era">1950 – 1970 · The Black Spider</span><p>The only goalkeeper to ever win the Ballon d'Or. Saved 150+ penalties in his career — a number nobody has come close to since.</p><div class="stats"><div><b>1×</b>Ballon d'Or</div><div><b>270+</b>clean sheets</div></div></article>
+
+    <article class="sticker"><div class="num">11</div><div class="country">🇺🇸 USA</div><h3>RAPINOE</h3><span class="era">2006 – 2023 · Pinoe</span><p>Two World Cups, an Olympic gold, and the rarer trick of changing the conversation around the women's game while still winning Golden Boots.</p><div class="stats"><div><b>2×</b>WC titles</div><div><b>1×</b>Ballon d'Or Féminin</div></div></article>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="lesson-meta">
+    <div>
+      <span class="kicker">Lesson Four</span>
+      <div class="section-num">§ 04 / TECHNIQUE</div>
+    </div>
+    <button class="mark-read" data-lesson="skills">Mark as learned</button>
+  </div>
+  <h2 class="section-title">The<br>Tools.</h2>
+  <p class="section-lede">You don't need to be Messi. You do need a first touch that doesn't betray you, a pass that finds a friend, and a shot that goes where you mean it. Six basics that translate everywhere.</p>
+
+  <div class="skills-grid">
+    <div class="skill">
+      <svg viewBox="0 0 300 200">
+        <rect width="300" height="200" fill="#f1ead8"/>
+        <circle cx="60" cy="140" r="14" fill="#0c0b0a"/>
+        <path d="M70 130 Q 130 80 200 110" stroke="#d63031" stroke-width="2.5" fill="none" stroke-dasharray="5 4"/>
+        <circle cx="200" cy="110" r="10" fill="none" stroke="#0c0b0a" stroke-width="2"/>
+        <text x="60" y="170" font-family="JetBrains Mono" font-size="9" fill="#0c0b0a">YOU</text>
+        <text x="190" y="100" font-family="JetBrains Mono" font-size="9" fill="#d63031">BALL</text>
+        <path d="M195 113 L 215 110 L 205 120" stroke="#d63031" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="body">
+        <span class="difficulty">★ ☆ ☆ ☆ ☆ — Beginner</span>
+        <h4 class="name">First Touch</h4>
+        <p class="desc">The single most important skill in the game. Your first contact decides whether the next move is forward or panicked.</p>
+        <div class="steps">
+          <span>Move toward the ball</span>
+          <span>Soften your foot at impact</span>
+          <span>Direct it into space, not your feet</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <svg viewBox="0 0 300 200">
+        <rect width="300" height="200" fill="#f1ead8"/>
+        <circle cx="60" cy="100" r="14" fill="#0c0b0a"/>
+        <circle cx="240" cy="100" r="14" fill="#0c0b0a"/>
+        <path d="M75 100 L 225 100" stroke="#d63031" stroke-width="2.5"/>
+        <path d="M218 96 L 230 100 L 218 104" stroke="#d63031" stroke-width="2" fill="none"/>
+        <text x="40" y="135" font-family="JetBrains Mono" font-size="9" fill="#0c0b0a">SENDER</text>
+        <text x="220" y="135" font-family="JetBrains Mono" font-size="9" fill="#0c0b0a">TARGET</text>
+        <text x="130" y="92" font-family="JetBrains Mono" font-size="9" fill="#d63031">SHORT PASS</text>
+      </svg>
+      <div class="body">
+        <span class="difficulty">★ ★ ☆ ☆ ☆ — Easy</span>
+        <h4 class="name">The Pass</h4>
+        <p class="desc">Inside of the foot, ankle locked, follow through. Aim for the player your teammate is becoming, not the player they are.</p>
+        <div class="steps">
+          <span>Plant foot points to target</span>
+          <span>Strike with the side of the foot</span>
+          <span>Pass into stride, not feet</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <svg viewBox="0 0 300 200">
+        <rect width="300" height="200" fill="#f1ead8"/>
+        <rect x="100" y="40" width="120" height="60" fill="none" stroke="#0c0b0a" stroke-width="3"/>
+        <line x1="100" y1="40" x2="220" y2="40" stroke="#0c0b0a" stroke-width="3"/>
+        <circle cx="150" cy="160" r="8" fill="#d63031"/>
+        <path d="M152 156 Q 180 110 215 60" stroke="#d63031" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+        <text x="40" y="170" font-family="JetBrains Mono" font-size="9" fill="#d63031">SHOT</text>
+      </svg>
+      <div class="body">
+        <span class="difficulty">★ ★ ★ ☆ ☆ — Intermediate</span>
+        <h4 class="name">The Shot</h4>
+        <p class="desc">Pace and placement, not power. Aim for the corners — keepers can save anything within reach, but they can't reach what's tucked low and far.</p>
+        <div class="steps">
+          <span>Approach from a slight angle</span>
+          <span>Plant foot beside the ball</span>
+          <span>Strike with laces, knee over the ball</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <svg viewBox="0 0 300 200">
+        <rect width="300" height="200" fill="#f1ead8"/>
+        <circle cx="80" cy="120" r="14" fill="#0c0b0a"/>
+        <path d="M90 120 Q 110 60 130 120 Q 150 60 170 120 Q 190 60 210 120" stroke="#d63031" stroke-width="2.5" fill="none"/>
+        <circle cx="210" cy="120" r="9" fill="none" stroke="#0c0b0a" stroke-width="2"/>
+        <text x="120" y="180" font-family="JetBrains Mono" font-size="9" fill="#d63031">DRIBBLE</text>
+      </svg>
+      <div class="body">
+        <span class="difficulty">★ ★ ★ ☆ ☆ — Intermediate</span>
+        <h4 class="name">Dribbling</h4>
+        <p class="desc">Small touches, head up. The ball stays inside an imaginary box around your feet — never far enough that an opponent can poke it away.</p>
+        <div class="steps">
+          <span>Use both feet, both insides</span>
+          <span>Touches every step, not every yard</span>
+          <span>Head up — see the field, not the ball</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <svg viewBox="0 0 300 200">
+        <rect width="300" height="200" fill="#f1ead8"/>
+        <circle cx="150" cy="50" r="11" fill="#0c0b0a"/>
+        <path d="M150 60 L 150 110" stroke="#0c0b0a" stroke-width="3"/>
+        <path d="M150 110 L 130 150 M 150 110 L 170 150" stroke="#0c0b0a" stroke-width="3"/>
+        <path d="M150 80 L 130 100 M 150 80 L 170 100" stroke="#0c0b0a" stroke-width="3"/>
+        <circle cx="150" cy="35" r="9" fill="#d63031"/>
+        <path d="M150 26 Q 110 10 80 50" stroke="#d63031" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+        <path d="M150 26 Q 190 10 220 50" stroke="#d63031" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+        <text x="100" y="195" font-family="JetBrains Mono" font-size="9" fill="#d63031">HEADER</text>
+      </svg>
+      <div class="body">
+        <span class="difficulty">★ ★ ★ ★ ☆ — Advanced</span>
+        <h4 class="name">The Header</h4>
+        <p class="desc">Use your forehead, not the top of your head. Attack the ball — don't let the ball attack you. Eyes open, neck strong.</p>
+        <div class="steps">
+          <span>Time your jump, not the ball's flight</span>
+          <span>Strike with the forehead</span>
+          <span>Aim downward — keepers struggle with low</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <svg viewBox="0 0 300 200">
+        <rect width="300" height="200" fill="#f1ead8"/>
+        <circle cx="80" cy="100" r="14" fill="#0c0b0a"/>
+        <circle cx="220" cy="100" r="14" fill="#d63031"/>
+        <path d="M95 100 L 100 130 L 105 100 L 110 130 L 215 130 L 215 100" stroke="#0c0b0a" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+        <circle cx="115" cy="135" r="6" fill="none" stroke="#0c0b0a" stroke-width="2"/>
+        <text x="60" y="160" font-family="JetBrains Mono" font-size="9" fill="#0c0b0a">YOU</text>
+        <text x="200" y="160" font-family="JetBrains Mono" font-size="9" fill="#d63031">RIVAL</text>
+        <text x="120" y="170" font-family="JetBrains Mono" font-size="9" fill="#0c0b0a">FEINT →</text>
+      </svg>
+      <div class="body">
+        <span class="difficulty">★ ★ ★ ★ ★ — Advanced</span>
+        <h4 class="name">The Feint</h4>
+        <p class="desc">A lie told with the body. Lean one way, push the ball the other. A defender's weight has to commit somewhere — make them commit wrong.</p>
+        <div class="steps">
+          <span>Drop the shoulder one way</span>
+          <span>Push the ball the opposite way</span>
+          <span>Accelerate — don't admire</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games" class="games-section">
+  <div>
+    <span class="kicker">Pitch Drills</span>
+    <div class="section-num" style="color: rgba(241,234,216,0.5);">§ 05 / MINI-GAMES</div>
+  </div>
+  <h2 class="section-title">Cup<br>Final.</h2>
+  <p class="section-lede">Ninety seconds. A 5-a-side cup final against an AI rival. You control the player nearest the ball — sprint into space, line up the shot, and put it past the keeper.</p>
+
+  <div class="lock-banner" id="lock-banner">
+    <span>⚑ MATCH LOCKED — Mark at least <b>3 of 4</b> lessons as learned to take the field.</span>
+    <span class="status" id="lock-status">0 / 3</span>
+  </div>
+
+  <div class="game match-card locked" id="game-match">
+    <div class="lock-overlay">
+      <div class="icon">⚑</div>
+      <p>Complete the lessons to play</p>
+    </div>
+    <h3>Cup Final · 5-A-Side</h3>
+    <span class="game-tag">— ninety seconds. one cup. you bring the boots.</span>
+    <div class="game-body">
+      <div class="match-hud">
+        <div class="match-team">
+          <span class="team-dot home"></span>
+          <span>PITCH PERFECT FC</span>
+          <span class="team-score" id="match-home-score">0</span>
+        </div>
+        <div class="match-clock" id="match-clock">90"</div>
+        <div class="match-team">
+          <span class="team-score" id="match-away-score">0</span>
+          <span>RIVAL XI</span>
+          <span class="team-dot away"></span>
+        </div>
+      </div>
+      <div class="match-canvas-wrap">
+        <canvas id="match-canvas" width="800" height="500"></canvas>
+        <div class="match-toast" id="match-toast"></div>
+        <div class="match-overlay-msg" id="match-overlay-msg" style="display:none">
+          <div class="msg-verdict" id="match-verdict"></div>
+          <div class="msg-text" id="match-msg"></div>
+          <button class="match-replay" id="match-replay">PLAY AGAIN</button>
+        </div>
+      </div>
+      <div class="match-controls">
+        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> MOVE</span>
+        <span>🖱 CLICK · DRAG TO AIM · ESC RELEASE</span>
+        <span><kbd>Space</kbd> SHOOT</span>
+        <button class="btn-reset" id="match-restart">RESTART</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div>
+    <span class="kicker">The Final Whistle</span>
+    <div class="section-num">§ 06 / TEST</div>
+  </div>
+  <h2 class="section-title">The<br>Test.</h2>
+  <p class="section-lede">Ten questions covering everything you've just read. Take it whenever — there's no pass mark. Just see what stuck.</p>
+
+  <div class="quiz-wrap">
+    <div id="quiz-live">
+      <div class="quiz-meta">
+        <span id="quiz-q-num">Q1 / 10</span>
+        <div class="qbar"><span id="quiz-bar"></span></div>
+      </div>
+      <h3 class="quiz-q" id="quiz-q">Question goes here</h3>
+      <div class="quiz-opts" id="quiz-opts"></div>
+    </div>
+    <div class="quiz-final" id="quiz-final">
+      <div class="verdict-num"><span id="quiz-final-score">0</span>/10</div>
+      <p class="verdict-text" id="quiz-final-text">— let's run that again.</p>
+      <button class="restart" id="quiz-restart">RESTART THE TEST</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="megafoot">PITCH<br>PER<em>fect</em>.</div>
+  <div class="crest-line">
+    <span>FC PITCH PERFECT — A FOOTBALL PRIMER</span>
+    <span class="right">"Some people think football is a matter of life and death. I assure you, it's much more serious than that."</span>
+    <span>EDITION I / MMXXVI</span>
+  </div>
+</footer>
+
+<script>
+/* ------------------ PROGRESS / LESSONS ------------------ */
+const LESSONS = ['rules','positions','legends','skills'];
+const LS_KEY = 'pitchPerfect.progress';
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveProgress(p) { localStorage.setItem(LS_KEY, JSON.stringify(p)); }
+
+const progress = loadProgress();
+
+function renderProgress() {
+  const done = LESSONS.filter(l => progress[l]).length;
+  const total = LESSONS.length;
+  document.getElementById('progress-label').textContent = `${done}/${total}`;
+  document.getElementById('progress-fill').style.width = `${(done/total)*100}%`;
+
+  document.querySelectorAll('.mark-read').forEach(btn => {
+    const l = btn.dataset.lesson;
+    if (progress[l]) {
+      btn.classList.add('done');
+      btn.textContent = ' Learned';
+    } else {
+      btn.classList.remove('done');
+      btn.textContent = 'Mark as learned';
+    }
+  });
+
+  // unlock games
+  const unlocked = done >= 3;
+  const banner = document.getElementById('lock-banner');
+  document.getElementById('lock-status').textContent = `${Math.min(done,3)} / 3`;
+  if (unlocked) {
+    banner.classList.add('unlocked');
+    banner.querySelector('span').innerHTML = '★ MATCH UNLOCKED — kick off when ready.';
+    document.getElementById('game-match').classList.remove('locked');
+  } else {
+    banner.classList.remove('unlocked');
+    banner.querySelector('span').innerHTML = `⚑ MATCH LOCKED — Mark at least <b>3 of 4</b> lessons as learned to take the field.`;
+    document.getElementById('game-match').classList.add('locked');
+  }
+}
+
+document.querySelectorAll('.mark-read').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const l = btn.dataset.lesson;
+    progress[l] = !progress[l];
+    saveProgress(progress);
+    renderProgress();
+  });
+});
+
+/* ------------------ POSITIONS ------------------ */
+const positions = {
+  GK: {
+    name: 'GOALKEEPER',
+    role: '— last line, first decision',
+    desc: 'The only player allowed to use hands, but only inside their own penalty area. Reads shots, organizes the defence, and starts most attacks with a kick or throw.',
+    traits: ['HANDS LEGAL', 'NUMBER 1', 'COMMANDS THE BOX']
+  },
+  LB: { name: 'LEFT-BACK', role: '— defend, then attack', desc: 'A defender who patrols the left flank. Tracks the opposing winger, then bombs forward to deliver crosses when their team has the ball.', traits: ['ENDLESS RUNNING', 'DELIVERS CROSSES', 'SPRINTER'] },
+  CB: { name: 'CENTRE-BACK', role: '— heart of the defence', desc: 'Tall, strong, and calm. Marks the opposing striker, wins headers, and reads the game two passes ahead. The general at the back.', traits: ['AERIAL DUELS', 'TACKLE & READ', 'LEADER'] },
+  RB: { name: 'RIGHT-BACK', role: '— mirror of the LB', desc: 'Same job as the left-back, opposite side. In modern football, often the team\'s most attacking defender — sometimes inverting into midfield.', traits: ['OVERLAPS', 'CROSSES', 'INVERTS INSIDE'] },
+  DM: { name: 'DEFENSIVE MID', role: '— the screen', desc: 'Sits in front of the back four, breaks up the opposition\'s play, and recycles possession. The unsexy job that makes everything else possible.', traits: ['INTERCEPTIONS', 'SHORT PASSING', 'SCREEN THE BACK'] },
+  CM: { name: 'CENTRAL MID', role: '— the engine', desc: 'Box-to-box. Tackles in their own half, scores in the opposite. The lungs of the team — first to a loose ball, last off the pitch.', traits: ['BOX-TO-BOX', 'STAMINA', 'LATE RUNS'] },
+  LW: { name: 'LEFT WINGER', role: '— width and chaos', desc: 'Hugs the left touchline, takes defenders one-on-one. In a modern 4-3-3, often left-footed cutting in to shoot, or right-footed staying wide to cross.', traits: ['1-V-1 DRIBBLE', 'CUTS INSIDE', 'PACE'] },
+  ST: { name: 'CENTRE FORWARD', role: '— the finisher', desc: 'The reason the team exists in the final third. Holds the ball up, brings teammates in, and converts whatever scraps reach them. Glory and blame in equal measure.', traits: ['FINISHING', 'HOLD-UP PLAY', 'AERIAL THREAT'] },
+  RW: { name: 'RIGHT WINGER', role: '— mirror of the LW', desc: 'The right-side counterpart to the left winger. The Messi/Salah role — inverted, dangerous coming inside onto the stronger foot.', traits: ['INVERTED FOOT', 'DRIBBLER', 'GOAL THREAT'] },
+};
+
+document.querySelectorAll('.player-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    document.querySelectorAll('.player-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+    const p = positions[dot.dataset.pos];
+    document.querySelector('#position-info .badge').textContent = dot.dataset.pos;
+    document.getElementById('pos-name').textContent = p.name;
+    document.getElementById('pos-role').textContent = p.role;
+    document.getElementById('pos-desc').textContent = p.desc;
+    document.getElementById('pos-traits').innerHTML = p.traits.map(t => `<span>${t}</span>`).join('');
+  });
+});
+
+/* ------------------ MATCH GAME ------------------ */
+const matchCanvas = document.getElementById('match-canvas');
+const matchCtx = matchCanvas.getContext('2d');
+const M_W = matchCanvas.width, M_H = matchCanvas.height;
+const matchToastEl = document.getElementById('match-toast');
+const matchOverlayMsg = document.getElementById('match-overlay-msg');
+const matchKeys = {};
+const matchState = {
+  ball: { x: 400, y: 250, vx: 0, vy: 0 },
+  players: [],
+  scoreHome: 0, scoreAway: 0,
+  time: 90,
+  controlled: null,
+  paused: false,
+  ended: false,
+  kickTimers: new WeakMap(),
+};
+
+function makeMatchPlayer(team, role, x, y, num, name) {
+  return { team, role, x, y, homeX: x, homeY: y, vx: 0, vy: 0, num, name };
+}
+
+function resetMatchPositions() {
+  matchState.ball = { x: 400, y: 250, vx: 0, vy: 0 };
+  matchState.possessor = null;
+  matchState.possessTimer = 0;
+  matchState.players = [
+    makeMatchPlayer('home', 'GK',  65, 250,  1, 'YASHIN'),
+    makeMatchPlayer('home', 'DEF', 170, 180, 4, 'BECKENBAUER'),
+    makeMatchPlayer('home', 'DEF', 170, 320, 3, 'MALDINI'),
+    makeMatchPlayer('home', 'MID', 290, 250, 14, 'CRUYFF'),
+    makeMatchPlayer('home', 'FWD', 380, 250, 10, 'PELÉ'),
+    makeMatchPlayer('away', 'GK', 735, 250, 1, 'BUFFON'),
+    makeMatchPlayer('away', 'DEF', 630, 180, 5, 'CANNAVARO'),
+    makeMatchPlayer('away', 'DEF', 630, 320, 3, 'R.CARLOS'),
+    makeMatchPlayer('away', 'MID', 510, 250, 6, 'XAVI'),
+    makeMatchPlayer('away', 'FWD', 420, 250, 10, 'MARADONA'),
+  ];
+}
+
+function initMatch() {
+  matchState.scoreHome = 0;
+  matchState.scoreAway = 0;
+  matchState.time = 90;
+  matchState.paused = false;
+  matchState.ended = false;
+  matchState.controlled = null;
+  matchState.facing = { x: 1, y: 0 };
+  resetMatchPositions();
+  matchOverlayMsg.style.display = 'none';
+  updateMatchHud();
+}
+
+function updateMatchHud() {
+  document.getElementById('match-home-score').textContent = matchState.scoreHome;
+  document.getElementById('match-away-score').textContent = matchState.scoreAway;
+  document.getElementById('match-clock').textContent = `${Math.ceil(matchState.time)}"`;
+}
+
+function showMatchToast(text, kind, duration = 1300) {
+  matchToastEl.textContent = text;
+  matchToastEl.className = 'match-toast show ' + (kind || '');
+  setTimeout(() => matchToastEl.classList.remove('show'), duration);
+}
+
+function dist2(a, b) { return (a.x - b.x) ** 2 + (a.y - b.y) ** 2; }
+
+function updateMatch(dt) {
+  if (matchState.paused || matchState.ended) return;
+  matchState.time -= dt;
+  if (matchState.time <= 0) { matchState.time = 0; endMatchGame(); return; }
+
+  // User always controls the home forward
+  matchState.controlled = matchState.players.find(p => p.team === 'home' && p.role === 'FWD');
+
+  // FP-relative input: W = forward in facing direction, A/D = strafe, S = back
+  if (!matchState.facing) matchState.facing = { x: 1, y: 0 };
+  const fxIn = matchState.facing.x, fyIn = matchState.facing.y;
+  const rxIn = -fyIn, ryIn = fxIn;
+  const SPEED = 150;
+  let ux = 0, uy = 0;
+  const hasFwd  = matchKeys['ArrowUp']    || matchKeys['KeyW'];
+  const hasBack = matchKeys['ArrowDown']  || matchKeys['KeyS'];
+  const hasLeft = matchKeys['ArrowLeft']  || matchKeys['KeyA'];
+  const hasRight= matchKeys['ArrowRight'] || matchKeys['KeyD'];
+  if (hasFwd)   { ux += fxIn; uy += fyIn; }
+  if (hasBack)  { ux -= fxIn; uy -= fyIn; }
+  if (hasLeft)  { ux -= rxIn; uy -= ryIn; }
+  if (hasRight) { ux += rxIn; uy += ryIn; }
+  if (ux || uy) {
+    const m = Math.hypot(ux, uy);
+    matchState.controlled.vx = (ux/m) * SPEED;
+    matchState.controlled.vy = (uy/m) * SPEED;
+  } else {
+    matchState.controlled.vx = 0;
+    matchState.controlled.vy = 0;
+  }
+
+  // Only rotate facing when user presses forward (skipped if mouse-aim is active)
+  const cv = matchState.controlled;
+  const cspeed = Math.hypot(cv.vx, cv.vy);
+  const mouseAiming = document.pointerLockElement === matchCanvas;
+  if (hasFwd && cspeed > 5 && !mouseAiming) {
+    const tfx = cv.vx / cspeed, tfy = cv.vy / cspeed;
+    matchState.facing.x = matchState.facing.x * 0.92 + tfx * 0.08;
+    matchState.facing.y = matchState.facing.y * 0.92 + tfy * 0.08;
+    const fm = Math.hypot(matchState.facing.x, matchState.facing.y);
+    if (fm > 0.001) {
+      matchState.facing.x /= fm;
+      matchState.facing.y /= fm;
+    }
+  }
+
+  // AI
+  for (const p of matchState.players) {
+    if (p === matchState.controlled) continue;
+    matchAi(p);
+  }
+
+  // Apply velocities
+  for (const p of matchState.players) {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.x = Math.max(40, Math.min(760, p.x));
+    p.y = Math.max(40, Math.min(460, p.y));
+  }
+
+  // POSSESSION & dribbling
+  if (matchState.possessTimer > 0) matchState.possessTimer -= dt;
+
+  if (matchState.possessor) {
+    const p = matchState.possessor;
+    // Ball glued to player's feet, slightly in their forward direction
+    let dirX = 1, dirY = 0;
+    const ps = Math.hypot(p.vx, p.vy);
+    if (p === matchState.controlled) {
+      dirX = matchState.facing.x; dirY = matchState.facing.y;
+    } else if (ps > 5) {
+      dirX = p.vx / ps; dirY = p.vy / ps;
+    }
+    matchState.ball.x = p.x + dirX * 12;
+    matchState.ball.y = p.y + dirY * 12;
+    matchState.ball.vx = p.vx;
+    matchState.ball.vy = p.vy;
+
+    // Tackle: any opponent within range steals possession
+    for (const q of matchState.players) {
+      if (q.team === p.team) continue;
+      const d = Math.hypot(q.x - matchState.ball.x, q.y - matchState.ball.y);
+      if (d < 14) { matchState.possessor = q; break; }
+    }
+
+    // Shoot — user with Space, AI when in range of goal
+    if (matchState.possessor === p) {
+      let shouldShoot = false, sX = 1, sY = 0, power = 420;
+      if (p === matchState.controlled) {
+        if (matchKeys['Space']) {
+          shouldShoot = true;
+          sX = matchState.facing.x; sY = matchState.facing.y;
+          power = 560;
+        }
+      } else {
+        const goalX = (p.team === 'home') ? 800 : 0;
+        const dToGoal = Math.hypot(goalX - p.x, 250 - p.y);
+        if (dToGoal < 230 || Math.random() < 0.006) {
+          shouldShoot = true;
+          const dx = goalX - matchState.ball.x;
+          const dy = 250 - matchState.ball.y;
+          const dm = Math.hypot(dx, dy);
+          sX = dx / dm; sY = dy / dm;
+          power = p.role === 'GK' ? 360 : 420;
+        }
+      }
+      if (shouldShoot) {
+        matchState.ball.vx = sX * power;
+        matchState.ball.vy = sY * power;
+        matchState.possessor = null;
+        matchState.possessTimer = 0.35;
+      }
+    }
+  } else {
+    // Free ball — normal physics
+    matchState.ball.x += matchState.ball.vx * dt;
+    matchState.ball.y += matchState.ball.vy * dt;
+    matchState.ball.vx *= Math.pow(0.18, dt);
+    matchState.ball.vy *= Math.pow(0.18, dt);
+    const bs = Math.hypot(matchState.ball.vx, matchState.ball.vy);
+    if (bs > 700) {
+      matchState.ball.vx = (matchState.ball.vx/bs) * 700;
+      matchState.ball.vy = (matchState.ball.vy/bs) * 700;
+    }
+    // Pickup: nearest player inside touch range becomes possessor
+    if (matchState.possessTimer <= 0) {
+      let pick = null, pickD = 16;
+      for (const p of matchState.players) {
+        const d = Math.hypot(p.x - matchState.ball.x, p.y - matchState.ball.y);
+        if (d < pickD) { pickD = d; pick = p; }
+      }
+      if (pick) matchState.possessor = pick;
+    }
+  }
+  // Touchlines
+  if (matchState.ball.y < 40)  { matchState.ball.y = 40;  matchState.ball.vy =  Math.abs(matchState.ball.vy) * 0.6; }
+  if (matchState.ball.y > 460) { matchState.ball.y = 460; matchState.ball.vy = -Math.abs(matchState.ball.vy) * 0.6; }
+  // Goals
+  if (matchState.ball.x < 35) {
+    if (matchState.ball.y > 200 && matchState.ball.y < 300) { matchState.scoreAway++; matchGoal('away'); }
+    else { matchState.ball.x = 40; matchState.ball.vx = Math.abs(matchState.ball.vx) * 0.5; }
+  }
+  if (matchState.ball.x > 765) {
+    if (matchState.ball.y > 200 && matchState.ball.y < 300) { matchState.scoreHome++; matchGoal('home'); }
+    else { matchState.ball.x = 760; matchState.ball.vx = -Math.abs(matchState.ball.vx) * 0.5; }
+  }
+
+  updateMatchHud();
+}
+
+function matchAi(p) {
+  const SPEED = p.role === 'GK' ? 110 : 130;
+  const ball = matchState.ball;
+  let tx = p.homeX, ty = p.homeY;
+  if (p.role === 'GK') {
+    tx = p.homeX;
+    ty = Math.max(210, Math.min(290, ball.y));
+  } else {
+    const team = matchState.players.filter(q => q.team === p.team && q.role !== 'GK' && q !== matchState.controlled);
+    let closest = team[0]; let bestD = Infinity;
+    for (const q of team) {
+      const d = dist2(q, ball);
+      if (d < bestD) { bestD = d; closest = q; }
+    }
+    if (p === closest) { tx = ball.x; ty = ball.y; }
+    else {
+      tx = p.homeX + (ball.x - 400) * 0.22;
+      ty = p.homeY + (ball.y - 250) * 0.18;
+    }
+  }
+  const dx = tx - p.x, dy = ty - p.y;
+  const d = Math.hypot(dx, dy);
+  if (d > 4) { p.vx = (dx/d) * SPEED; p.vy = (dy/d) * SPEED; }
+  else { p.vx = 0; p.vy = 0; }
+}
+
+function matchGoal(team) {
+  matchState.paused = true;
+  showMatchToast(team === 'home' ? 'GOAL!' : 'CONCEDED', team === 'home' ? '' : 'bad', 1500);
+  setTimeout(() => { if (matchState.ended) return; resetMatchPositions(); matchState.paused = false; }, 1500);
+}
+
+function endMatchGame() {
+  matchState.ended = true;
+  matchState.paused = true;
+  matchStarted = false;
+  const h = matchState.scoreHome, a = matchState.scoreAway;
+  let msg;
+  if (h > a) msg = '— full time. the cup is yours.';
+  else if (h < a) msg = '— a chastening defeat. back to training.';
+  else msg = '— honours even. share the spoils.';
+  document.getElementById('match-verdict').innerHTML = `<span>${h}</span>—${a}`;
+  document.getElementById('match-msg').textContent = msg;
+  document.getElementById('match-replay').textContent = 'PLAY AGAIN';
+  matchOverlayMsg.style.display = 'flex';
+  matchNeedsDraw = true;
+}
+
+function showMatchStartScreen() {
+  matchStarted = false;
+  document.getElementById('match-verdict').innerHTML = 'Kick<br>Off.';
+  document.getElementById('match-msg').textContent = "Ninety seconds. One cup. You're Pelé in red.";
+  document.getElementById('match-replay').textContent = 'START THE GAME';
+  matchOverlayMsg.style.display = 'flex';
+  matchNeedsDraw = true;
+}
+
+function startMatchPlay() {
+  initMatch();
+  matchOverlayMsg.style.display = 'none';
+  matchStarted = true;
+}
+
+function drawPlayerFigure(p) {
+  const speed = Math.hypot(p.vx, p.vy);
+  if (speed > 5) p.stride = (p.stride || 0) + 0.22 + speed * 0.0015;
+  const swing = speed > 5 ? Math.sin(p.stride) * 3 : 0;
+  const bob = speed > 5 ? Math.abs(Math.sin(p.stride)) * 1.5 : 0;
+  const leanX = speed > 8 ? Math.max(-3, Math.min(3, p.vx * 0.022)) : 0;
+  const leanY = speed > 8 ? Math.max(-2, Math.min(2, p.vy * 0.018)) : 0;
+
+  const isHome = p.team === 'home';
+  const isGK = p.role === 'GK';
+  const jersey = isGK ? '#f0b429' : (isHome ? '#d63031' : '#0c0b0a');
+  const shorts = isHome ? '#0c0b0a' : '#f6f1e1';
+  const skin = '#f4d4a8';
+  const cy = p.y - bob;
+
+  // Motion trail for controlled / fast home player
+  if (p === matchState.controlled && speed > 30) {
+    matchCtx.strokeStyle = 'rgba(240,180,41,0.5)';
+    matchCtx.lineWidth = 2;
+    matchCtx.beginPath();
+    matchCtx.moveTo(p.x - p.vx * 0.06, p.y - p.vy * 0.06);
+    matchCtx.lineTo(p.x - p.vx * 0.18, p.y - p.vy * 0.18);
+    matchCtx.stroke();
+    matchCtx.strokeStyle = 'rgba(240,180,41,0.25)';
+    matchCtx.beginPath();
+    matchCtx.moveTo(p.x - p.vx * 0.18, p.y - p.vy * 0.18);
+    matchCtx.lineTo(p.x - p.vx * 0.30, p.y - p.vy * 0.30);
+    matchCtx.stroke();
+  }
+
+  // Shadow
+  matchCtx.fillStyle = 'rgba(0,0,0,0.32)';
+  matchCtx.beginPath();
+  matchCtx.ellipse(p.x, p.y + 13, 9, 2.5, 0, 0, Math.PI * 2);
+  matchCtx.fill();
+
+  // GK side-to-side keeper sway when idle
+  let gkSway = 0;
+  if (isGK && speed < 5) gkSway = Math.sin(performance.now() * 0.004) * 1.5;
+
+  // Legs (alternating stride)
+  matchCtx.fillStyle = shorts;
+  matchCtx.fillRect(p.x - 5 + gkSway, cy + 4 - swing, 4, 9 + swing);
+  matchCtx.fillRect(p.x + 1 + gkSway, cy + 4 + swing, 4, 9 - swing);
+
+  // Body (with lean)
+  const bx = p.x + leanX, by = cy + leanY;
+  matchCtx.fillStyle = jersey;
+  matchCtx.fillRect(bx - 7, by - 5, 14, 10);
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = 0.8;
+  matchCtx.strokeRect(bx - 7, by - 5, 14, 10);
+
+  // Number
+  matchCtx.fillStyle = '#f6f1e1';
+  matchCtx.font = 'bold 8px "Big Shoulders Display", sans-serif';
+  matchCtx.textAlign = 'center';
+  matchCtx.textBaseline = 'middle';
+  matchCtx.fillText(p.num, bx, by - 0.5);
+
+  // Arms / GK gloves
+  if (isGK) {
+    const gkArmSwing = Math.sin(performance.now() * 0.005) * 1.5;
+    matchCtx.fillStyle = jersey;
+    matchCtx.fillRect(bx - 13, by - 3 + gkArmSwing, 6, 4);
+    matchCtx.fillRect(bx + 7,  by - 3 - gkArmSwing, 6, 4);
+    matchCtx.fillStyle = '#f6f1e1';
+    matchCtx.fillRect(bx - 15, by - 4 + gkArmSwing, 3, 5);
+    matchCtx.fillRect(bx + 12, by - 4 - gkArmSwing, 3, 5);
+  } else {
+    matchCtx.fillStyle = skin;
+    matchCtx.fillRect(bx - 9, by - 4 + swing * 0.6, 2.5, 8);
+    matchCtx.fillRect(bx + 6.5, by - 4 - swing * 0.6, 2.5, 8);
+  }
+
+  // Head
+  const hx = p.x + leanX * 1.4, hy = cy + leanY * 1.4;
+  matchCtx.fillStyle = skin;
+  matchCtx.beginPath();
+  matchCtx.arc(hx, hy - 10, 4.2, 0, Math.PI * 2);
+  matchCtx.fill();
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = 0.7;
+  matchCtx.stroke();
+  matchCtx.fillStyle = '#1a1410';
+  matchCtx.beginPath();
+  matchCtx.arc(hx, hy - 11, 4.2, Math.PI, 0);
+  matchCtx.fill();
+
+  // Name
+  const nameSize = p.name.length > 9 ? 7 : 8.5;
+  matchCtx.font = `bold ${nameSize}px "Big Shoulders Display", sans-serif`;
+  matchCtx.fillStyle = isHome ? '#f6f1e1' : '#ebe3cc';
+  matchCtx.strokeStyle = 'rgba(12,11,10,0.85)';
+  matchCtx.lineWidth = 3;
+  matchCtx.lineJoin = 'round';
+  matchCtx.strokeText(p.name, p.x, cy - 19);
+  matchCtx.fillText(p.name, p.x, cy - 19);
+
+  // Controlled highlight (pulsing)
+  if (p === matchState.controlled) {
+    const pulse = 18 + Math.sin(performance.now() * 0.006) * 1.5;
+    matchCtx.strokeStyle = '#f0b429';
+    matchCtx.lineWidth = 2.5;
+    matchCtx.beginPath();
+    matchCtx.arc(p.x, p.y + 4, pulse, 0, Math.PI * 2);
+    matchCtx.stroke();
+  }
+}
+
+function drawCornerFlag(x, y) {
+  const t = performance.now();
+  matchCtx.fillStyle = '#0c0b0a';
+  matchCtx.fillRect(x - 0.5, y - 14, 1.5, 14);
+  matchCtx.fillStyle = '#f0b429';
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = 0.8;
+  const wave = Math.sin(t * 0.005 + x * 0.02) * 1.2;
+  matchCtx.beginPath();
+  matchCtx.moveTo(x, y - 14);
+  matchCtx.lineTo(x + 8 + wave, y - 12);
+  matchCtx.lineTo(x + 7 + wave * 0.5, y - 10);
+  matchCtx.lineTo(x, y - 8);
+  matchCtx.closePath();
+  matchCtx.fill();
+  matchCtx.stroke();
+}
+
+function drawBallSpinning(b) {
+  if (b.angle === undefined) b.angle = 0;
+  const speed = Math.hypot(b.vx, b.vy);
+  b.angle += speed * 0.0007;
+  matchCtx.save();
+  matchCtx.translate(b.x, b.y);
+  matchCtx.rotate(b.angle);
+  // shadow
+  matchCtx.fillStyle = 'rgba(0,0,0,0.25)';
+  matchCtx.beginPath();
+  matchCtx.ellipse(0, 8, 6, 2, 0, 0, Math.PI * 2);
+  matchCtx.fill();
+  // ball
+  matchCtx.fillStyle = '#f6f1e1';
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = 1.5;
+  matchCtx.beginPath();
+  matchCtx.arc(0, 0, 6.5, 0, Math.PI * 2);
+  matchCtx.fill();
+  matchCtx.stroke();
+  // pentagon
+  matchCtx.fillStyle = '#0c0b0a';
+  matchCtx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+    const px = Math.cos(a) * 2.6, py = Math.sin(a) * 2.6;
+    if (i === 0) matchCtx.moveTo(px, py);
+    else matchCtx.lineTo(px, py);
+  }
+  matchCtx.closePath();
+  matchCtx.fill();
+  // hex spokes
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = 0.6;
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+    matchCtx.beginPath();
+    matchCtx.moveTo(Math.cos(a) * 2.6, Math.sin(a) * 2.6);
+    matchCtx.lineTo(Math.cos(a) * 5.5, Math.sin(a) * 5.5);
+    matchCtx.stroke();
+  }
+  matchCtx.restore();
+}
+
+function drawMatch() {
+  const cam = matchState.controlled;
+  if (!cam) return;
+  if (!matchState.facing) matchState.facing = { x: 1, y: 0 };
+  const fx = matchState.facing.x, fy = matchState.facing.y;
+  const rx = -fy, ry = fx;
+  // True first-person: camera at the player's eye level
+  const camX = cam.x;
+  const camY = cam.y;
+  const focal = 360;
+  const camHeight = 32;
+  const horizonY = 210;
+
+  function project(wx, wy) {
+    const dx = wx - camX, dy = wy - camY;
+    const depth = dx * fx + dy * fy;
+    if (depth < 1) return null;
+    const lateral = dx * rx + dy * ry;
+    return {
+      x: M_W / 2 + lateral * focal / depth,
+      y: horizonY + camHeight * focal / depth,
+      scale: focal / depth,
+      depth
+    };
+  }
+
+  // Sky
+  const sky = matchCtx.createLinearGradient(0, 0, 0, horizonY);
+  sky.addColorStop(0, '#0a1424');
+  sky.addColorStop(1, '#243a52');
+  matchCtx.fillStyle = sky;
+  matchCtx.fillRect(0, 0, M_W, horizonY);
+
+  // Distant stadium
+  matchCtx.fillStyle = '#0c0b0a';
+  matchCtx.beginPath();
+  matchCtx.moveTo(0, horizonY);
+  matchCtx.quadraticCurveTo(M_W / 2, horizonY - 50, M_W, horizonY);
+  matchCtx.lineTo(M_W, horizonY);
+  matchCtx.lineTo(0, horizonY);
+  matchCtx.closePath();
+  matchCtx.fill();
+
+  // Floodlights glow
+  matchCtx.fillStyle = 'rgba(240,180,41,0.55)';
+  for (let i = 0; i < 6; i++) {
+    matchCtx.beginPath();
+    matchCtx.arc(80 + i * 130, horizonY - 32, 3.5, 0, Math.PI * 2);
+    matchCtx.fill();
+  }
+
+  // Crowd shimmer
+  const t = performance.now();
+  for (let i = 0; i < 90; i++) {
+    matchCtx.fillStyle = `rgba(${180 + (i*7)%70}, ${140 + (i*11)%80}, ${100 + (i*13)%80}, 0.55)`;
+    const cx = (i * 39 + t * 0.004) % M_W;
+    const cy = horizonY - 6 - (i % 9);
+    matchCtx.fillRect(cx, cy, 2, 2);
+  }
+
+  // Ground
+  const ground = matchCtx.createLinearGradient(0, horizonY, 0, M_H);
+  ground.addColorStop(0, '#0c3320');
+  ground.addColorStop(1, '#1a5b39');
+  matchCtx.fillStyle = ground;
+  matchCtx.fillRect(0, horizonY, M_W, M_H - horizonY);
+
+  // Pitch grass stripes (perspective quads)
+  for (let xx = 40; xx < 760; xx += 90) {
+    const a = project(xx, 30);
+    const b = project(xx + 90, 30);
+    const c = project(xx + 90, 470);
+    const d = project(xx, 470);
+    if (a && b && c && d) {
+      matchCtx.fillStyle = ((xx / 90) | 0) % 2 ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.02)';
+      matchCtx.beginPath();
+      matchCtx.moveTo(a.x, a.y);
+      matchCtx.lineTo(b.x, b.y);
+      matchCtx.lineTo(c.x, c.y);
+      matchCtx.lineTo(d.x, d.y);
+      matchCtx.closePath();
+      matchCtx.fill();
+    }
+  }
+
+  // Pitch lines
+  matchCtx.strokeStyle = '#f6f1e1';
+  matchCtx.lineWidth = 2;
+  function line(x1, y1, x2, y2) {
+    const a = project(x1, y1), b = project(x2, y2);
+    if (a && b) {
+      matchCtx.beginPath();
+      matchCtx.moveTo(a.x, a.y);
+      matchCtx.lineTo(b.x, b.y);
+      matchCtx.stroke();
+    }
+  }
+  line(760, 30, 760, 470);
+  line(40, 30, 760, 30);
+  line(40, 470, 760, 470);
+  line(400, 30, 400, 470);
+  line(670, 160, 760, 160);
+  line(670, 340, 760, 340);
+  line(670, 160, 670, 340);
+  line(720, 200, 760, 200);
+  line(720, 300, 760, 300);
+  line(720, 200, 720, 300);
+
+  // Goal at far end (x=770)
+  const lp = project(770, 200);
+  const rp = project(770, 300);
+  if (lp && rp) {
+    const postH = 20 * lp.scale;
+    matchCtx.strokeStyle = '#f6f1e1';
+    matchCtx.lineWidth = Math.max(1, 2.5 * lp.scale);
+    matchCtx.beginPath();
+    matchCtx.moveTo(lp.x, lp.y);
+    matchCtx.lineTo(lp.x, lp.y - postH);
+    matchCtx.lineTo(rp.x, rp.y - postH);
+    matchCtx.lineTo(rp.x, rp.y);
+    matchCtx.stroke();
+    matchCtx.strokeStyle = 'rgba(241,234,216,0.3)';
+    matchCtx.lineWidth = 0.5;
+    for (let h = 1; h < 5; h++) {
+      const yy1 = lp.y - postH * h / 5;
+      const yy2 = rp.y - postH * h / 5;
+      matchCtx.beginPath();
+      matchCtx.moveTo(lp.x, yy1);
+      matchCtx.lineTo(rp.x, yy2);
+      matchCtx.stroke();
+    }
+  }
+
+  // Corner flags
+  for (const [fx, fy] of [[40, 30], [40, 470], [760, 30], [760, 470]]) {
+    const fp = project(fx, fy);
+    if (!fp) continue;
+    const s = fp.scale;
+    matchCtx.fillStyle = '#0c0b0a';
+    matchCtx.fillRect(fp.x - 0.5, fp.y - 14 * s, 1.5, 14 * s);
+    matchCtx.fillStyle = '#f0b429';
+    const wave = Math.sin(t * 0.005 + fx * 0.02) * 1.2 * s;
+    matchCtx.beginPath();
+    matchCtx.moveTo(fp.x, fp.y - 14 * s);
+    matchCtx.lineTo(fp.x + 7 * s + wave, fp.y - 12 * s);
+    matchCtx.lineTo(fp.x, fp.y - 8 * s);
+    matchCtx.closePath();
+    matchCtx.fill();
+  }
+
+  // Players (sorted by depth, far first)
+  const projected = matchState.players.map(p => ({ p, proj: project(p.x, p.y) }))
+    .filter(o => o.proj)
+    .sort((a, b) => b.proj.depth - a.proj.depth);
+  for (const { p, proj } of projected) drawPlayerFP(p, proj);
+
+  // Ball
+  const ballProj = project(matchState.ball.x, matchState.ball.y);
+  if (ballProj) drawBallFP(matchState.ball, ballProj);
+
+  // Your own feet / shorts (FP cockpit)
+  const cv2 = matchState.controlled;
+  const sp = Math.hypot(cv2.vx, cv2.vy);
+  if (sp > 5) cv2.stride = (cv2.stride || 0) + 0.22;
+  const legSwing = sp > 5 ? Math.sin(cv2.stride) * 9 : 0;
+  // Shorts band
+  matchCtx.fillStyle = '#0c0b0a';
+  matchCtx.fillRect(M_W / 2 - 70, M_H - 100, 140, 18);
+  // Jersey hem hint
+  matchCtx.fillStyle = '#d63031';
+  matchCtx.fillRect(M_W / 2 - 70, M_H - 110, 140, 12);
+  // Legs
+  matchCtx.fillStyle = '#f4d4a8';
+  matchCtx.fillRect(M_W / 2 - 40 + legSwing, M_H - 82, 22, 50);
+  matchCtx.fillRect(M_W / 2 + 18 - legSwing, M_H - 82, 22, 50);
+  // Socks
+  matchCtx.fillStyle = '#0c0b0a';
+  matchCtx.fillRect(M_W / 2 - 40 + legSwing, M_H - 50, 22, 16);
+  matchCtx.fillRect(M_W / 2 + 18 - legSwing, M_H - 50, 22, 16);
+  // Boots
+  matchCtx.fillStyle = '#1a1410';
+  matchCtx.fillRect(M_W / 2 - 44 + legSwing, M_H - 34, 30, 14);
+  matchCtx.fillRect(M_W / 2 + 14 - legSwing, M_H - 34, 30, 14);
+  // Stitching highlight
+  matchCtx.strokeStyle = 'rgba(241,234,216,0.5)';
+  matchCtx.lineWidth = 1;
+  matchCtx.beginPath();
+  matchCtx.moveTo(M_W / 2 - 30 + legSwing, M_H - 30);
+  matchCtx.lineTo(M_W / 2 - 18 + legSwing, M_H - 30);
+  matchCtx.moveTo(M_W / 2 + 22 - legSwing, M_H - 30);
+  matchCtx.lineTo(M_W / 2 + 34 - legSwing, M_H - 30);
+  matchCtx.stroke();
+}
+
+function drawPlayerFP(p, proj) {
+  const s = Math.min(2.5, proj.scale);
+  const size = Math.max(8, 26 * s);
+  const cx = proj.x;
+  const cy = proj.y;
+
+  const isHome = p.team === 'home';
+  const isGK = p.role === 'GK';
+  const jersey = isGK ? '#f0b429' : (isHome ? '#d63031' : '#0c0b0a');
+  const skin = '#f4d4a8';
+  const speed = Math.hypot(p.vx, p.vy);
+  if (speed > 5) p.stride = (p.stride || 0) + 0.22;
+  const swing = speed > 5 ? Math.sin(p.stride) * size * 0.10 : 0;
+
+  // Shadow
+  matchCtx.fillStyle = 'rgba(0,0,0,0.4)';
+  matchCtx.beginPath();
+  matchCtx.ellipse(cx, cy + 1, size * 0.45, size * 0.13, 0, 0, Math.PI * 2);
+  matchCtx.fill();
+
+  // Legs
+  matchCtx.fillStyle = '#0c0b0a';
+  const legW = size * 0.18, legH = size * 0.50;
+  matchCtx.fillRect(cx - legW - 1 + swing, cy - legH, legW, legH);
+  matchCtx.fillRect(cx + 1 - swing, cy - legH, legW, legH);
+
+  // Body
+  const bodyH = size * 0.55;
+  const bodyW = size * 0.65;
+  matchCtx.fillStyle = jersey;
+  matchCtx.fillRect(cx - bodyW / 2, cy - legH - bodyH, bodyW, bodyH);
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = Math.max(0.6, 0.9 * s);
+  matchCtx.strokeRect(cx - bodyW / 2, cy - legH - bodyH, bodyW, bodyH);
+
+  // Number
+  if (s > 0.25) {
+    matchCtx.fillStyle = '#f6f1e1';
+    matchCtx.font = `bold ${Math.max(8, 11 * s)}px "Big Shoulders Display", sans-serif`;
+    matchCtx.textAlign = 'center';
+    matchCtx.textBaseline = 'middle';
+    matchCtx.fillText(p.num, cx, cy - legH - bodyH / 2);
+  }
+
+  // Arms / GK gloves
+  if (isGK) {
+    const armW = size * 0.22, armH = size * 0.16;
+    matchCtx.fillStyle = jersey;
+    matchCtx.fillRect(cx - bodyW / 2 - armW, cy - legH - bodyH * 0.65, armW, armH);
+    matchCtx.fillRect(cx + bodyW / 2,         cy - legH - bodyH * 0.65, armW, armH);
+    matchCtx.fillStyle = '#f6f1e1';
+    matchCtx.fillRect(cx - bodyW / 2 - armW - size * 0.12, cy - legH - bodyH * 0.65, size * 0.14, armH);
+    matchCtx.fillRect(cx + bodyW / 2 + armW,                cy - legH - bodyH * 0.65, size * 0.14, armH);
+  } else {
+    matchCtx.fillStyle = skin;
+    matchCtx.fillRect(cx - bodyW / 2 - size * 0.12, cy - legH - bodyH * 0.85 + swing * 0.5, size * 0.14, size * 0.42);
+    matchCtx.fillRect(cx + bodyW / 2,                cy - legH - bodyH * 0.85 - swing * 0.5, size * 0.14, size * 0.42);
+  }
+
+  // Head
+  matchCtx.fillStyle = skin;
+  matchCtx.beginPath();
+  matchCtx.arc(cx, cy - legH - bodyH - size * 0.25, size * 0.25, 0, Math.PI * 2);
+  matchCtx.fill();
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = Math.max(0.4, 0.6 * s);
+  matchCtx.stroke();
+  matchCtx.fillStyle = '#1a1410';
+  matchCtx.beginPath();
+  matchCtx.arc(cx, cy - legH - bodyH - size * 0.32, size * 0.25, Math.PI, 0);
+  matchCtx.fill();
+
+  // Name
+  if (s > 0.22) {
+    const nameSize = Math.max(7, 8 * s);
+    matchCtx.font = `bold ${nameSize}px "Big Shoulders Display", sans-serif`;
+    matchCtx.fillStyle = '#f6f1e1';
+    matchCtx.strokeStyle = 'rgba(12,11,10,0.85)';
+    matchCtx.lineWidth = 3;
+    matchCtx.lineJoin = 'round';
+    const nameY = cy - legH - bodyH - size * 0.65;
+    matchCtx.strokeText(p.name, cx, nameY);
+    matchCtx.fillText(p.name, cx, nameY);
+  }
+
+  // Controlled ring at feet
+  if (p === matchState.controlled) {
+    matchCtx.strokeStyle = '#f0b429';
+    matchCtx.lineWidth = Math.max(1.5, 2 * s);
+    matchCtx.beginPath();
+    matchCtx.ellipse(cx, cy, size * 0.50, size * 0.16, 0, 0, Math.PI * 2);
+    matchCtx.stroke();
+  }
+}
+
+function drawBallFP(b, proj) {
+  const s = Math.min(2.5, proj.scale);
+  const r = Math.max(3, 6 * s);
+  matchCtx.fillStyle = 'rgba(0,0,0,0.4)';
+  matchCtx.beginPath();
+  matchCtx.ellipse(proj.x, proj.y, r * 0.85, r * 0.28, 0, 0, Math.PI * 2);
+  matchCtx.fill();
+  matchCtx.fillStyle = '#f6f1e1';
+  matchCtx.strokeStyle = '#0c0b0a';
+  matchCtx.lineWidth = Math.max(0.8, 1.2 * s);
+  matchCtx.beginPath();
+  matchCtx.arc(proj.x, proj.y - r * 0.7, r, 0, Math.PI * 2);
+  matchCtx.fill(); matchCtx.stroke();
+  if (s > 0.4) {
+    if (b.angle === undefined) b.angle = 0;
+    b.angle += Math.hypot(b.vx, b.vy) * 0.0008;
+    matchCtx.save();
+    matchCtx.translate(proj.x, proj.y - r * 0.7);
+    matchCtx.rotate(b.angle);
+    matchCtx.fillStyle = '#0c0b0a';
+    matchCtx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+      const px = Math.cos(a) * r * 0.4, py = Math.sin(a) * r * 0.4;
+      if (i === 0) matchCtx.moveTo(px, py);
+      else matchCtx.lineTo(px, py);
+    }
+    matchCtx.closePath();
+    matchCtx.fill();
+    matchCtx.restore();
+  }
+}
+
+window.addEventListener('keydown', e => {
+  matchKeys[e.code] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)
+      && !document.getElementById('game-match').classList.contains('locked')) {
+    e.preventDefault();
+  }
+});
+window.addEventListener('keyup', e => { matchKeys[e.code] = false; });
+
+// Mouse aim via pointer lock
+matchCanvas.addEventListener('click', () => {
+  const isLocked = document.getElementById('game-match').classList.contains('locked');
+  if (isLocked || !matchStarted) return;
+  if (document.pointerLockElement !== matchCanvas) {
+    matchCanvas.requestPointerLock();
+  }
+});
+document.addEventListener('mousemove', e => {
+  if (document.pointerLockElement !== matchCanvas) return;
+  if (!matchState.facing) matchState.facing = { x: 1, y: 0 };
+  const angle = (e.movementX || 0) * 0.003;
+  const cos = Math.cos(angle), sin = Math.sin(angle);
+  const fxc = matchState.facing.x, fyc = matchState.facing.y;
+  matchState.facing.x = fxc * cos - fyc * sin;
+  matchState.facing.y = fxc * sin + fyc * cos;
+});
+
+document.getElementById('match-restart').addEventListener('click', startMatchPlay);
+document.getElementById('match-replay').addEventListener('click', startMatchPlay);
+
+let matchLastTime = 0;
+let matchWasLocked = true;
+let matchNeedsDraw = true;
+let matchStarted = false;
+function matchLoop(t) {
+  const dt = Math.min(0.04, (t - matchLastTime) / 1000);
+  matchLastTime = t;
+  const locked = document.getElementById('game-match').classList.contains('locked');
+  if (locked !== matchWasLocked) matchNeedsDraw = true;
+  if (!locked && matchWasLocked) {
+    initMatch();
+    showMatchStartScreen();
+  }
+  matchWasLocked = locked;
+  if (!locked && matchStarted) {
+    matchCtx.clearRect(0, 0, M_W, M_H);
+    updateMatch(dt);
+    drawMatch();
+  } else if (matchNeedsDraw) {
+    matchCtx.clearRect(0, 0, M_W, M_H);
+    drawMatch();
+    matchNeedsDraw = false;
+  }
+  requestAnimationFrame(matchLoop);
+}
+
+/* ------------------ QUIZ ------------------ */
+const quizQuestions = [
+  { q: 'How many players from each team start a match on the pitch?', opts: ['9','10','11','12'], a: 2 },
+  { q: 'A standard match (without extra time) lasts how many minutes?', opts: ['60','75','90','120'], a: 2 },
+  { q: 'Who is the only player allowed to use their hands during open play?', opts: ['The captain','The goalkeeper','The centre-back','The striker'], a: 1 },
+  { q: 'What does a referee\'s second yellow card to the same player result in?', opts: ['A penalty','A free kick','A red card','A warning'], a: 2 },
+  { q: 'In a 4-3-3 formation, how many midfielders are there?', opts: ['Two','Three','Four','Five'], a: 1 },
+  { q: 'Which legend won the Ballon d\'Or as a goalkeeper?', opts: ['Pelé','Yashin','Beckenbauer','Maradona'], a: 1 },
+  { q: 'An attacker is offside when…', opts: ['…they are level with the last defender','…they are behind the ball','…they are ahead of both the ball and the second-to-last defender at the moment the pass is played','…they are inside the penalty area'], a: 2 },
+  { q: 'A penalty kick is taken from how many yards out?', opts: ['10','11','12','15'], a: 2 },
+  { q: 'Which of these is the correct technique for a basic pass?', opts: ['Toe-poke with maximum power','Inside of the foot, ankle locked','Outside of the foot at full sprint','Heel-flick into space'], a: 1 },
+  { q: 'When the ball goes out over the touchline, the restart is a…', opts: ['Goal kick','Corner kick','Throw-in','Drop ball'], a: 2 },
+];
+
+const quizState = { i: 0, score: 0 };
+
+function renderQuiz() {
+  const q = quizQuestions[quizState.i];
+  document.getElementById('quiz-q-num').textContent = `Q${quizState.i + 1} / ${quizQuestions.length}`;
+  document.getElementById('quiz-bar').style.width = `${((quizState.i + 1) / quizQuestions.length) * 100}%`;
+  document.getElementById('quiz-q').textContent = q.q;
+  const opts = document.getElementById('quiz-opts');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((text, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.dataset.letter = letters[idx];
+    btn.textContent = text;
+    btn.addEventListener('click', () => {
+      const all = opts.querySelectorAll('.quiz-opt');
+      all.forEach(o => o.classList.add('disabled'));
+      if (idx === q.a) {
+        btn.classList.add('correct');
+        quizState.score++;
+      } else {
+        btn.classList.add('wrong');
+        all[q.a].classList.add('correct');
+      }
+      setTimeout(() => {
+        quizState.i++;
+        if (quizState.i >= quizQuestions.length) {
+          showFinal();
+        } else {
+          renderQuiz();
+        }
+      }, 1100);
+    });
+    opts.appendChild(btn);
+  });
+}
+
+function showFinal() {
+  document.getElementById('quiz-live').style.display = 'none';
+  const final = document.getElementById('quiz-final');
+  final.classList.add('show');
+  document.getElementById('quiz-final-score').textContent = quizState.score;
+  const txt = quizState.score === 10 ? "— a clean sheet. you're booked for the World Cup." :
+              quizState.score >= 8  ? '— starting eleven. impressive.' :
+              quizState.score >= 6  ? '— solid bench. one more lap.' :
+              quizState.score >= 4  ? '— promising trialist. revisit the lessons.' :
+                                      '— back to the academy. start again from the top.';
+  document.getElementById('quiz-final-text').textContent = txt;
+}
+
+document.getElementById('quiz-restart').addEventListener('click', () => {
+  quizState.i = 0; quizState.score = 0;
+  document.getElementById('quiz-final').classList.remove('show');
+  document.getElementById('quiz-live').style.display = 'block';
+  renderQuiz();
+});
+
+/* ------------------ INIT ------------------ */
+renderProgress();
+initMatch();
+requestAnimationFrame(matchLoop);
+renderQuiz();
+
+// activate first dot for visual default
+document.querySelector('[data-pos="ST"]').classList.add('active');
+positions.ST && (() => {
+  document.querySelector('#position-info .badge').textContent = 'ST';
+  document.getElementById('pos-name').textContent = positions.ST.name;
+  document.getElementById('pos-role').textContent = positions.ST.role;
+  document.getElementById('pos-desc').textContent = positions.ST.desc;
+  document.getElementById('pos-traits').innerHTML = positions.ST.traits.map(t => `<span>${t}</span>`).join('');
+})();
+</script>
+
+</body>
+</html>
